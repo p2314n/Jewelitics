@@ -5,3 +5,4 @@ __pycache__/
 .env
 uploads/products/*
 !uploads/products/.gitkeep
+!uploads/products/demo_*.png
