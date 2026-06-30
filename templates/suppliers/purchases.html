@@ -1,0 +1,40 @@
+{% extends "layout_admin.html" %}
+{% block title %}Purchase Orders{% endblock %}
+{% block page_title %}Purchase Orders{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="mb-0">All Purchases</h5>
+    <a href="{{ url_for('suppliers.add_purchase') }}" class="btn btn-gold"><i class="bi bi-plus-lg"></i> New Purchase</a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead><tr><th>PO #</th><th>Supplier</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for po in purchases %}
+                <tr>
+                    <td><code>{{ po.po_number }}</code></td>
+                    <td>{{ po.supplier.name }}</td>
+                    <td>{{ po.product.name }}</td>
+                    <td>{{ po.quantity }}</td>
+                    <td>₹{{ "{:,.0f}".format(po.total) }}</td>
+                    <td><span class="badge-status badge-{{ po.status }}">{{ po.status | title }}</span></td>
+                    <td>{{ po.created_at.strftime('%b %d, %Y') }}</td>
+                    <td>
+                        {% if po.status == 'pending' %}
+                        <a href="{{ url_for('suppliers.receive_purchase', id=po.id) }}" class="btn btn-sm btn-success"><i class="bi bi-check"></i> Receive</a>
+                        <a href="{{ url_for('suppliers.cancel_purchase', id=po.id) }}" class="btn btn-sm btn-outline-danger"><i class="bi bi-x"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not purchases %}
+                <tr><td colspan="8" class="text-center text-muted py-4">No purchase orders</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

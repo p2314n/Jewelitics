@@ -1,0 +1,36 @@
+{% extends "layout_admin.html" %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}Order Management{% endblock %}
+
+{% block content %}
+<div class="d-flex gap-2 mb-4 flex-wrap">
+    <a href="{{ url_for('orders.order_list') }}" class="btn {{ 'btn-gold' if not status_filter else 'btn-outline-gold' }}">All</a>
+    {% for s in ['pending','accepted','processing','packed','shipped','delivered','cancelled'] %}
+    <a href="{{ url_for('orders.order_list', status=s) }}" class="btn {{ 'btn-gold' if status_filter == s else 'btn-outline-gold' }} btn-sm">{{ s | title }}</a>
+    {% endfor %}
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead><tr><th>Order #</th><th>Customer</th><th>Amount</th><th>Status</th><th>Payment</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><a href="{{ url_for('orders.order_detail', id=order.id) }}">{{ order.order_number }}</a></td>
+                    <td>{{ order.customer.full_name }}</td>
+                    <td>₹{{ "{:,.0f}".format(order.total_amount) }}</td>
+                    <td><span class="badge-status badge-{{ order.status }}">{{ order.status | title }}</span></td>
+                    <td><span class="badge-status badge-{{ order.payment_status }}">{{ order.payment_status | title }}</span></td>
+                    <td>{{ order.created_at.strftime('%b %d') }}</td>
+                    <td><a href="{{ url_for('orders.order_detail', id=order.id) }}" class="btn btn-sm btn-outline-gold">View</a></td>
+                </tr>
+                {% endfor %}
+                {% if not orders %}
+                <tr><td colspan="7" class="text-center text-muted py-4">No orders found</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

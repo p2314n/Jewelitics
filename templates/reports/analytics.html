@@ -1,0 +1,155 @@
+{% extends "layout_admin.html" %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+
+{% block content %}
+<!-- Top Selling Products -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h6><i class="bi bi-bar-chart-fill text-warning"></i> Monthly Sales Trend</h6>
+            <canvas id="monthlyChart" height="100"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h6><i class="bi bi-pie-chart-fill text-warning"></i> Revenue by Material</h6>
+            <canvas id="materialChart" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <h6><i class="bi bi-trophy-fill text-warning"></i> Top Selling Products</h6>
+            <div class="table-responsive mt-2">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>#</th><th>Product</th><th>Qty Sold</th><th>Revenue</th></tr></thead>
+                    <tbody>
+                        {% for name, qty, revenue in top_products %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ name }}</td>
+                            <td>{{ qty or 0 }}</td>
+                            <td>₹{{ "{:,.0f}".format(revenue or 0) }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% if not top_products %}
+                        <tr><td colspan="4" class="text-muted text-center">No sales data yet</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <h6><i class="bi bi-tags-fill text-warning"></i> Category Performance</h6>
+            <div class="table-responsive mt-2">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Category</th><th>Revenue</th></tr></thead>
+                    <tbody>
+                        {% for name, revenue in cat_perf %}
+                        <tr>
+                            <td>{{ name }}</td>
+                            <td>₹{{ "{:,.0f}".format(revenue or 0) }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% if not cat_perf %}
+                        <tr><td colspan="2" class="text-muted text-center">No data</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <h6><i class="bi bi-cash-stack text-success"></i> Most Profitable Items</h6>
+            <p class="text-muted small">Items with the highest margin (Selling - Purchase Price)</p>
+            <div class="table-responsive mt-2">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Product</th><th>Selling Price</th><th>Profit Margin</th></tr></thead>
+                    <tbody>
+                        {% for name, profit, price in most_profitable %}
+                        <tr>
+                            <td>{{ name }}</td>
+                            <td>₹{{ "{:,.0f}".format(price) }}</td>
+                            <td class="text-success fw-bold">+₹{{ "{:,.0f}".format(profit) }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% if not most_profitable %}
+                        <tr><td colspan="3" class="text-muted text-center">No data</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card p-4">
+            <h6><i class="bi bi-exclamation-octagon-fill text-danger"></i> Dead Stock (Zero Sales)</h6>
+            <p class="text-muted small">Items in inventory that have never been sold.</p>
+            <div class="table-responsive mt-2">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Product</th><th>Stock Left</th><th>Value Locked</th></tr></thead>
+                    <tbody>
+                        {% for name, qty, price in dead_stock %}
+                        <tr>
+                            <td>{{ name }}</td>
+                            <td><span class="badge bg-danger">{{ qty }}</span></td>
+                            <td>₹{{ "{:,.0f}".format(qty * price) }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% if not dead_stock %}
+                        <tr><td colspan="3" class="text-muted text-center">No dead stock! 🎉</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4">
+    <h6><i class="bi bi-people-fill text-warning"></i> Customer Stats</h6>
+    <p class="mb-0">Total Registered Customers: <strong>{{ total_customers }}</strong></p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('monthlyChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ monthly_labels | tojson }},
+        datasets: [{
+            label: 'Sales (₹)',
+            data: {{ monthly_sales | tojson }},
+            backgroundColor: 'rgba(212,175,55,0.6)',
+            borderColor: '#D4AF37',
+            borderWidth: 2,
+            borderRadius: 8
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+const matLabels = {{ materials | map(attribute=0) | list | tojson }};
+const matData = {{ materials | map(attribute=1) | list | tojson }};
+const matColors = ['#D4AF37','#C0C0C0','#E5E4E2','#B9F2FF','#FF6B6B'];
+new Chart(document.getElementById('materialChart'), {
+    type: 'doughnut',
+    data: {
+        labels: matLabels,
+        datasets: [{ data: matData, backgroundColor: matColors, borderWidth: 0 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+</script>
+{% endblock %}

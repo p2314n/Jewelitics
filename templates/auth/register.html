@@ -1,0 +1,75 @@
+{% extends "layout_auth.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        
+        <!-- Left Side: Hero Description -->
+        <div class="auth-hero">
+            <h1 class="fw-bold mb-1" style="font-family: var(--font-serif); color: var(--text); font-size: 4rem; letter-spacing: -1px;">Jewelitics</h1>
+            <h3 class="mb-4" style="font-family: var(--font-script); color: var(--gold); font-size: 2.5rem; font-weight: 400;">Begin your journey.</h3>
+            <p style="font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; max-width: 90%;">
+                Join us to find your perfect piece. Experience unparalleled luxury and curated collections tailored just for you.
+            </p>
+            <div class="mt-4 d-flex gap-4" style="color: var(--text-muted); font-size: 0.95rem;">
+                <div class="d-flex align-items-center"><i class="bi bi-gem text-gold me-2" style="color: var(--gold);"></i> Premium Quality</div>
+                <div class="d-flex align-items-center"><i class="bi bi-star-fill text-gold me-2" style="color: var(--gold);"></i> Certified Authenticity</div>
+            </div>
+        </div>
+
+        <!-- Right Side: Register Form -->
+        <div class="auth-form-section">
+            <div class="brand d-lg-none">
+                <i class="bi bi-gem"></i>
+                <h2>Jewelitics</h2>
+                <p>Join Jewelitics today</p>
+            </div>
+            
+            <h4 class="mb-4 d-none d-lg-block" style="font-family: var(--font-serif); color: var(--text);">Create Account</h4>
+
+
+            <form method="POST">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label">First Name</label>
+                        <input type="text" name="first_name" class="form-control" placeholder="First name">
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="last_name" class="form-control" placeholder="Last name">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Username *</label>
+                    <input type="text" name="username" class="form-control" placeholder="Choose a username" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email *</label>
+                    <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control" placeholder="Phone number">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password *</label>
+                    <div class="input-group">
+                        <input type="password" name="password" id="registerPassword" class="form-control" placeholder="Min 6 characters" required style="border-right: none;">
+                        <button class="btn border" type="button" onclick="togglePassword('registerPassword', this)" style="border-color: var(--border-color) !important; background: transparent; color: var(--text-muted);">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-gold w-100 py-2 mb-3">
+                    <i class="bi bi-person-plus"></i> Create Account
+                </button>
+                <p class="text-center text-muted">
+                    Already have an account? <a href="{{ url_for('auth.login') }}">Sign In</a>
+                </p>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "layout_admin.html" %}
+{% block title %}Products{% endblock %}
+{% block page_title %}Products{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <h5 class="mb-0">All Products</h5>
+    <a href="{{ url_for('products.add_product') }}" class="btn btn-gold"><i class="bi bi-plus-lg"></i> Add Product</a>
+</div>
+
+<!-- Filters -->
+<div class="card p-3 mb-4">
+    <form class="row g-2 align-items-end" method="GET">
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ search }}">
+        </div>
+        <div class="col-md-3">
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {{ 'selected' if cat_id == cat.id|string }}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="material" class="form-select">
+                <option value="">All Materials</option>
+                <option value="Gold" {{ 'selected' if material=='Gold' }}>Gold</option>
+                <option value="Silver" {{ 'selected' if material=='Silver' }}>Silver</option>
+                <option value="Platinum" {{ 'selected' if material=='Platinum' }}>Platinum</option>
+                <option value="Diamond" {{ 'selected' if material=='Diamond' }}>Diamond</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-gold w-100"><i class="bi bi-search"></i> Filter</button>
+        </div>
+    </form>
+</div>
+
+<!-- Product Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Category</th>
+                    <th>Material</th>
+                    <th>Weight</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products.items %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            {% if product.image %}
+                            <img src="{{ url_for('uploaded_file', filename=product.image) }}" width="40" height="40" class="rounded" style="object-fit:cover">
+                            {% else %}
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#FEF3C7,#F59E0B);border-radius:8px;display:flex;align-items:center;justify-content:center">
+                                <i class="bi bi-gem text-dark"></i>
+                            </div>
+                            {% endif %}
+                            <a href="{{ url_for('products.product_detail', id=product.id) }}">{{ product.name }}</a>
+                        </div>
+                    </td>
+                    <td><code>{{ product.sku }}</code></td>
+                    <td>{{ product.category.name if product.category else '-' }}</td>
+                    <td>{{ product.material }} {{ product.purity }}</td>
+                    <td>{{ product.weight }}g</td>
+                    <td>₹{{ "{:,.0f}".format(product.selling_price) }}</td>
+                    <td>
+                        {% if product.is_out_of_stock %}
+                        <span class="badge bg-danger">Out of Stock</span>
+                        {% elif product.is_low_stock %}
+                        <span class="badge bg-warning text-dark">{{ product.quantity }} (Low)</span>
+                        {% else %}
+                        <span class="badge bg-success">{{ product.quantity }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('products.edit_product', id=product.id) }}" class="btn btn-sm btn-outline-gold"><i class="bi bi-pencil"></i></a>
+                        <a href="{{ url_for('products.delete_product', id=product.id) }}" class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('Delete this product?')"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not products.items %}
+                <tr><td colspan="8" class="text-center text-muted py-4">No products found</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if products.pages > 1 %}
+<nav class="mt-3">
+    <ul class="pagination justify-content-center">
+        {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+        <li class="page-item {{ 'active' if page_num == products.page }}">
+            <a class="page-link" href="?page={{ page_num }}&search={{ search }}&category={{ cat_id }}&material={{ material }}">{{ page_num }}</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

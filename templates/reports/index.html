@@ -1,0 +1,60 @@
+{% extends "layout_admin.html" %}
+{% block title %}Reports{% endblock %}
+{% block page_title %}Reports{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <i class="bi bi-boxes text-warning mb-2" style="font-size:2.5rem"></i>
+            <h6>Inventory Report</h6>
+            <p class="text-muted small">All products with stock levels, prices, and status.</p>
+            <a href="{{ url_for('reports.download_report', report_type='inventory') }}" class="btn btn-gold btn-sm">
+                <i class="bi bi-download"></i> Download CSV
+            </a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <i class="bi bi-graph-up-arrow text-success mb-2" style="font-size:2.5rem"></i>
+            <h6>Sales Report</h6>
+            <p class="text-muted small">Daily sales totals, profit, and order counts.</p>
+            <a href="{{ url_for('reports.download_report', report_type='sales') }}" class="btn btn-gold btn-sm">
+                <i class="bi bi-download"></i> Download CSV
+            </a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <i class="bi bi-receipt text-primary mb-2" style="font-size:2.5rem"></i>
+            <h6>Orders Report</h6>
+            <p class="text-muted small">All orders with customer details and status.</p>
+            <a href="{{ url_for('reports.download_report', report_type='orders') }}" class="btn btn-gold btn-sm">
+                <i class="bi bi-download"></i> Download CSV
+            </a>
+        </div>
+    </div>
+    <div class="col-md-4 mt-3">
+        <div class="card p-4 text-center">
+            <i class="bi bi-people text-info mb-2" style="font-size:2.5rem"></i>
+            <h6>Customer Report</h6>
+            <p class="text-muted small">Customer details, total orders, and total spent.</p>
+            <a href="{{ url_for('reports.download_report', report_type='customers') }}" class="btn btn-gold btn-sm">
+                <i class="bi bi-download"></i> Download CSV
+            </a>
+        </div>
+    </div>
+    {% if current_user.role == 'admin' %}
+    <div class="col-md-4 mt-3">
+        <div class="card p-4 text-center">
+            <i class="bi bi-person-badge text-secondary mb-2" style="font-size:2.5rem"></i>
+            <h6>Staff Report</h6>
+            <p class="text-muted small">Details of all staff and administrators.</p>
+            <a href="{{ url_for('reports.download_report', report_type='staff') }}" class="btn btn-gold btn-sm">
+                <i class="bi bi-download"></i> Download CSV
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

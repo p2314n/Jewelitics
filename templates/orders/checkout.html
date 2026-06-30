@@ -1,0 +1,39 @@
+{% extends "layout_customer.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<h4 class="mb-4"><i class="bi bi-calendar-check text-warning"></i> Book Order</h4>
+<div class="row">
+    <div class="col-lg-7 mb-4">
+        <div class="card p-4">
+            <h6 class="mb-3">Shipping Details</h6>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Delivery Address</label>
+                    <textarea name="address" class="form-control" rows="3" required placeholder="Enter full delivery address"></textarea>
+                </div>
+                <div class="alert alert-info border-0 mt-4 mb-4" style="background: rgba(197, 160, 89, 0.1); color: var(--gold);">
+                    <i class="bi bi-info-circle me-2"></i> Our team will contact you to confirm payment and shipping details after you book.
+                </div>
+                <button type="submit" class="btn btn-gold w-100 py-2"><i class="bi bi-calendar-check"></i> Confirm Booking — ₹{{ "{:,.0f}".format(total) }}</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card p-4">
+            <h6 class="mb-3">Order Summary</h6>
+            {% for item in items %}
+            <div class="d-flex justify-content-between mb-2">
+                <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                <span>₹{{ "{:,.0f}".format(item.product.selling_price * item.quantity) }}</span>
+            </div>
+            {% endfor %}
+            <hr>
+            <div class="d-flex justify-content-between">
+                <strong>Total</strong>
+                <strong class="text-warning fs-5">₹{{ "{:,.0f}".format(total) }}</strong>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

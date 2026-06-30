@@ -1,0 +1,227 @@
+{% extends "layout_admin.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon gold"><i class="bi bi-box-seam-fill"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_products }}</h3>
+                <p>Total Products</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="bi bi-tags-fill"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_categories }}</h3>
+                <p>Categories</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_customers }}</h3>
+                <p>Customers</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon purple"><i class="bi bi-truck"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_suppliers }}</h3>
+                <p>Suppliers</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon gold"><i class="bi bi-cash-coin"></i></div>
+            <div class="stat-info">
+                <h3>₹{{ "{:,.0f}".format(inventory_value) }}</h3>
+                <p>Inventory Value</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="bi bi-graph-up-arrow"></i></div>
+            <div class="stat-info">
+                <h3>₹{{ "{:,.0f}".format(today_sales) }}</h3>
+                <p>Today's Sales</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="bi bi-calendar-check"></i></div>
+            <div class="stat-info">
+                <h3>₹{{ "{:,.0f}".format(monthly_sales) }}</h3>
+                <p>Monthly Sales</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon pink"><i class="bi bi-calendar-range"></i></div>
+            <div class="stat-info">
+                <h3>₹{{ "{:,.0f}".format(yearly_sales) }}</h3>
+                <p>Yearly Sales</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon gold"><i class="bi bi-clock-history"></i></div>
+            <div class="stat-info">
+                <h3>{{ pending_orders }}</h3>
+                <p>Pending Orders</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="stat-info">
+                <h3>{{ completed_orders }}</h3>
+                <p>Completed Orders</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon red"><i class="bi bi-exclamation-triangle-fill"></i></div>
+            <div class="stat-info">
+                <h3>{{ low_stock }}</h3>
+                <p>Low Stock Items</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon red"><i class="bi bi-x-octagon-fill"></i></div>
+            <div class="stat-info">
+                <h3>{{ out_of_stock }}</h3>
+                <p>Out of Stock</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h6><i class="bi bi-graph-up text-warning"></i> Sales Trend (Last 7 Days)</h6>
+            <canvas id="salesChart" height="100"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h6><i class="bi bi-pie-chart-fill text-warning"></i> Category Distribution</h6>
+            <canvas id="categoryChart" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Orders -->
+<div class="card">
+    <div class="card-body">
+        <h6 class="mb-3"><i class="bi bi-receipt text-warning"></i> Recent Orders</h6>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td><a href="{{ url_for('orders.order_detail', id=order.id) }}">{{ order.order_number }}</a></td>
+                        <td>{{ order.customer.full_name }}</td>
+                        <td>₹{{ "{:,.0f}".format(order.total_amount) }}</td>
+                        <td><span class="badge-status badge-{{ order.status }}">{{ order.status | title }}</span></td>
+                        <td>{{ order.created_at.strftime('%b %d, %Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not recent_orders %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No orders yet</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+const goldColor = '#D4AF37';
+const goldLight = 'rgba(212,175,55,0.15)';
+
+// Sales Chart
+new Chart(document.getElementById('salesChart'), {
+    type: 'line',
+    data: {
+        labels: {{ chart_labels | tojson }},
+        datasets: [{
+            label: 'Sales (₹)',
+            data: {{ chart_sales | tojson }},
+            borderColor: goldColor,
+            backgroundColor: goldLight,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: goldColor,
+            pointRadius: 5,
+            pointHoverRadius: 8,
+            borderWidth: 3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+// Category Chart
+const catColors = ['#D4AF37','#3B82F6','#10B981','#EF4444','#8B5CF6','#EC4899','#F59E0B','#06B6D4','#6366F1','#14B8A6','#F43F5E','#A855F7','#22D3EE','#84CC16'];
+new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+        labels: {{ cat_labels | tojson }},
+        datasets: [{
+            data: {{ cat_counts | tojson }},
+            backgroundColor: catColors.slice(0, {{ cat_labels | length }}),
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 8, font: { size: 11 } } } }
+    }
+});
+</script>
+{% endblock %}

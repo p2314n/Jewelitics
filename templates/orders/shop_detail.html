@@ -1,0 +1,72 @@
+{% extends "layout_customer.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-5 mb-4">
+        {% if product.image %}
+        <img src="{{ url_for('uploaded_file', filename=product.image) }}" class="rounded w-100" style="height:400px;object-fit:cover">
+        {% else %}
+        <div style="height:400px;background:linear-gradient(135deg,#FEF3C7,#F59E0B);border-radius:16px;display:flex;align-items:center;justify-content:center">
+            <i class="bi bi-gem" style="font-size:6rem;color:#92400E"></i>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-lg-7">
+        <p class="text-muted mb-1">{{ product.category.name if product.category else '' }}</p>
+        <h3 class="mb-2">{{ product.name }}</h3>
+        <h2 class="text-warning mb-3">₹{{ "{:,.0f}".format(product.selling_price) }}</h2>
+
+        <table class="table table-borderless mb-3">
+            <tr><td class="text-muted" width="120">Material</td><td>{{ product.material }} {{ product.purity }}</td></tr>
+            <tr><td class="text-muted">Weight</td><td>{{ product.weight }}g</td></tr>
+            <tr><td class="text-muted">Availability</td>
+                <td>{% if product.is_out_of_stock %}<span class="badge bg-danger">Out of Stock</span>
+                {% else %}<span class="badge bg-success">In Stock</span>{% endif %}</td></tr>
+        </table>
+
+        {% if product.description %}
+        <div class="mb-4">
+            <h6 class="text-muted mb-2">Description</h6>
+            <p style="font-size: 0.95rem; line-height: 1.7;">{{ product.description }}</p>
+        </div>
+        {% endif %}
+
+        <form action="{{ url_for('orders.add_to_cart', product_id=product.id) }}" method="POST" class="mt-4">
+            <div class="d-flex gap-3 align-items-center mb-3">
+                <label for="quantity" class="text-muted fw-bold">Quantity</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.quantity }}" class="form-control" style="width:80px; text-align: center;">
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-outline-gold flex-grow-1" {{ 'disabled' if product.is_out_of_stock }}>
+                    <i class="bi bi-cart-plus"></i> Add to Cart
+                </button>
+                <button type="submit" name="book_order" value="true" class="btn btn-gold flex-grow-1" {{ 'disabled' if product.is_out_of_stock }}>
+                    <i class="bi bi-calendar-check"></i> Book an Order
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if related %}
+<hr class="my-4">
+<h5 class="mb-3">Related Products</h5>
+<div class="row g-3">
+    {% for p in related %}
+    <div class="col-lg-3 col-md-6">
+        <div class="product-card card">
+            <div class="card-img-top d-flex align-items-center justify-content-center" style="height:150px;background:linear-gradient(135deg,#FEF3C7,#F59E0B)">
+                <i class="bi bi-gem" style="font-size:2rem;color:#92400E"></i>
+            </div>
+            <div class="card-body">
+                <h6 class="product-name">{{ p.name }}</h6>
+                <p class="product-price">₹{{ "{:,.0f}".format(p.selling_price) }}</p>
+                <a href="{{ url_for('orders.shop_detail', id=p.id) }}" class="btn btn-sm btn-outline-gold w-100">View</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

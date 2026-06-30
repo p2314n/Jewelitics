@@ -1,0 +1,95 @@
+{% extends "layout_admin.html" %}
+{% block title %}Users{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+<!-- Search & Filter -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div class="d-flex gap-2 flex-wrap">
+        {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('users.user_list') }}" class="btn {{ 'btn-gold' if not role_filter else 'btn-outline-gold' }}">
+            All ({{ total }})
+        </a>
+        <a href="{{ url_for('users.user_list', role='staff') }}" class="btn {{ 'btn-gold' if role_filter=='staff' else 'btn-outline-gold' }}">
+            <i class="bi bi-person-badge"></i> Staff ({{ staff_count }})
+        </a>
+        <a href="{{ url_for('users.user_list', role='customer') }}" class="btn {{ 'btn-gold' if role_filter=='customer' else 'btn-outline-gold' }}">
+            <i class="bi bi-people"></i> Customers ({{ customer_count }})
+        </a>
+        {% else %}
+        <h5 class="mb-0"><i class="bi bi-people-fill text-warning"></i> Registered Customers ({{ users | length }})</h5>
+        {% endif %}
+    </div>
+    <form class="d-flex gap-2" method="GET">
+        {% if role_filter %}<input type="hidden" name="role" value="{{ role_filter }}">{% endif %}
+        <input type="text" name="search" class="form-control" placeholder="Search users..." value="{{ search }}" style="width:220px">
+        <button type="submit" class="btn btn-gold"><i class="bi bi-search"></i></button>
+    </form>
+</div>
+
+<!-- Users Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#B8960C);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.85rem">
+                                {{ user.first_name[:1] | upper if user.first_name else user.username[:1] | upper }}
+                            </div>
+                            <div>
+                                <strong>{{ user.full_name }}</strong>
+                                <br><small class="text-muted">@{{ user.username }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone or '—' }}</td>
+                    <td>
+                        {% if user.role == 'admin' %}
+                        <span class="badge bg-danger">Admin</span>
+                        {% elif user.role == 'staff' %}
+                        <span class="badge bg-primary">Staff</span>
+                        {% else %}
+                        <span class="badge bg-success">Customer</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('users.user_detail', id=user.id) }}" class="btn btn-sm btn-outline-gold" title="View Details">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        {% if current_user.role == 'admin' and user.role != 'admin' and user.id != current_user.id %}
+                        <a href="{{ url_for('users.delete_user', id=user.id) }}" class="btn btn-sm btn-outline-danger" title="Remove User"
+                           onclick="return confirm('Are you sure you want to remove {{ user.full_name }}? This cannot be undone.')">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not users %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="bi bi-people" style="font-size:2rem;opacity:0.3"></i>
+                        <p class="mt-2 mb-0">No users found</p>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

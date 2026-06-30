@@ -1,0 +1,48 @@
+{% extends "layout_admin.html" %}
+{% block title %}Inventory{% endblock %}
+{% block page_title %}Inventory Management{% endblock %}
+
+{% block content %}
+<!-- Filter Tabs -->
+<div class="d-flex gap-2 mb-4 flex-wrap">
+    <a href="{{ url_for('inventory.stock_list') }}" class="btn {{ 'btn-gold' if not filter_type else 'btn-outline-gold' }}">
+        All ({{ total }})
+    </a>
+    <a href="{{ url_for('inventory.stock_list', filter='low') }}" class="btn {{ 'btn-gold' if filter_type=='low' else 'btn-outline-gold' }}">
+        <i class="bi bi-exclamation-triangle"></i> Low Stock ({{ low_count }})
+    </a>
+    <a href="{{ url_for('inventory.stock_list', filter='out') }}" class="btn {{ 'btn-gold' if filter_type=='out' else 'btn-outline-gold' }}">
+        <i class="bi bi-x-octagon"></i> Out of Stock ({{ out_count }})
+    </a>
+    <a href="{{ url_for('inventory.logs') }}" class="btn btn-outline-secondary ms-auto">
+        <i class="bi bi-clock-history"></i> View Logs
+    </a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr><th>Product</th><th>SKU</th><th>Material</th><th>Current Stock</th><th>Min Stock</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>{{ p.name }}</td>
+                    <td><code>{{ p.sku }}</code></td>
+                    <td>{{ p.material }} {{ p.purity }}</td>
+                    <td><strong>{{ p.quantity }}</strong></td>
+                    <td>{{ p.min_stock }}</td>
+                    <td>
+                        {% if p.is_out_of_stock %}<span class="badge bg-danger">Out of Stock</span>
+                        {% elif p.is_low_stock %}<span class="badge bg-warning text-dark">Low Stock</span>
+                        {% else %}<span class="badge bg-success">In Stock</span>{% endif %}
+                    </td>
+                    <td><a href="{{ url_for('inventory.adjust_stock', product_id=p.id) }}" class="btn btn-sm btn-outline-gold"><i class="bi bi-sliders"></i> Adjust</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

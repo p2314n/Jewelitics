@@ -1,0 +1,75 @@
+{% extends "layout_admin.html" %}
+{% block title %}{{ user.full_name }}{% endblock %}
+{% block page_title %}User Details{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card p-4">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#B8960C);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.5rem">
+                    {{ user.first_name[:1] | upper if user.first_name else user.username[:1] | upper }}
+                </div>
+                <div>
+                    <h4 class="mb-0">{{ user.full_name }}</h4>
+                    <p class="text-muted mb-0">@{{ user.username }}</p>
+                </div>
+                <div class="ms-auto">
+                    {% if user.role == 'admin' %}
+                    <span class="badge bg-danger fs-6">Admin</span>
+                    {% elif user.role == 'staff' %}
+                    <span class="badge bg-primary fs-6">Staff</span>
+                    {% else %}
+                    <span class="badge bg-success fs-6">Customer</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <table class="table table-borderless">
+                <tr><td class="text-muted" width="150">Username</td><td>{{ user.username }}</td></tr>
+                <tr><td class="text-muted">Email</td><td>{{ user.email }}</td></tr>
+                <tr><td class="text-muted">Phone</td><td>{{ user.phone or '—' }}</td></tr>
+                <tr><td class="text-muted">Role</td><td>{{ user.role | title }}</td></tr>
+                <tr><td class="text-muted">Joined</td><td>{{ user.created_at.strftime('%B %d, %Y at %H:%M') }}</td></tr>
+                <tr><td class="text-muted">Status</td>
+                    <td>{% if user.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-secondary">Inactive</span>{% endif %}</td>
+                </tr>
+            </table>
+
+            {% if user.role == 'customer' %}
+            <hr>
+            <h6><i class="bi bi-bag-check text-warning"></i> Order History</h6>
+            {% if user.orders %}
+            <div class="table-responsive mt-2">
+                <table class="table table-sm">
+                    <thead><tr><th>Order #</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody>
+                        {% for order in user.orders[:10] %}
+                        <tr>
+                            <td><a href="{{ url_for('orders.order_detail', id=order.id) }}">{{ order.order_number }}</a></td>
+                            <td>₹{{ "{:,.0f}".format(order.total_amount) }}</td>
+                            <td><span class="badge-status badge-{{ order.status }}">{{ order.status | title }}</span></td>
+                            <td>{{ order.created_at.strftime('%b %d, %Y') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mt-2">No orders yet.</p>
+            {% endif %}
+            {% endif %}
+
+            <div class="d-flex gap-2 mt-3">
+                <a href="{{ url_for('users.user_list') }}" class="btn btn-outline-gold"><i class="bi bi-arrow-left"></i> Back to Users</a>
+                {% if current_user.role == 'admin' and user.role != 'admin' and user.id != current_user.id %}
+                <a href="{{ url_for('users.delete_user', id=user.id) }}" class="btn btn-outline-danger"
+                   onclick="return confirm('Remove {{ user.full_name }}?')">
+                    <i class="bi bi-trash"></i> Remove User
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

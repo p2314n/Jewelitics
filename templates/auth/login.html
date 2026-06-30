@@ -1,0 +1,57 @@
+{% extends "layout_auth.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        
+        <!-- Left Side: Hero Description -->
+        <div class="auth-hero">
+            <h1 class="fw-bold mb-1" style="font-family: var(--font-serif); color: var(--text); font-size: 4rem; letter-spacing: -1px;">Jewelitics</h1>
+            <h3 class="mb-4" style="font-family: var(--font-script); color: var(--gold); font-size: 2.5rem; font-weight: 400;">Discover timeless elegance.</h3>
+            <p style="font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; max-width: 90%;">
+                Exquisite, handcrafted pieces designed for your unforgettable moments. Sign in to explore our exclusive collections.
+            </p>
+            <div class="mt-4 d-flex gap-4" style="color: var(--text-muted); font-size: 0.95rem;">
+                <div class="d-flex align-items-center"><i class="bi bi-gem text-gold me-2" style="color: var(--gold);"></i> Premium Quality</div>
+                <div class="d-flex align-items-center"><i class="bi bi-star-fill text-gold me-2" style="color: var(--gold);"></i> Certified Authenticity</div>
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="auth-form-section">
+            <div class="brand d-lg-none">
+                <i class="bi bi-gem"></i>
+                <h2>Jewelitics</h2>
+                <p>Sign in to your account</p>
+            </div>
+            
+            <h4 class="mb-4 d-none d-lg-block" style="font-family: var(--font-serif); color: var(--text);">Sign In</h4>
+
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Username or Email</label>
+                    <input type="text" name="username" class="form-control" placeholder="Enter username or email" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="password" name="password" id="loginPassword" class="form-control" placeholder="Enter password" required style="border-right: none;">
+                        <button class="btn border" type="button" onclick="togglePassword('loginPassword', this)" style="border-color: var(--border-color) !important; background: transparent; color: var(--text-muted);">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-gold w-100 py-2 mb-3">
+                    <i class="bi bi-box-arrow-in-right"></i> Sign In
+                </button>
+                <p class="text-center text-muted">
+                    Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a>
+                </p>
+            </form>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
