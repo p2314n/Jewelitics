@@ -1,5 +1,4 @@
-# Jewelitics — Full-Stack Jewelry ERP & E-Commerce Platform
-
+# Jewelitics – Analytics-Driven Jewelry ERP & E-Commerce Platform
 A complete luxury jewelry store management system built with **Python Flask** and **SQLite**. This is a **Full Stack + Data Analytics** project featuring role-based authentication, OTP email verification, real-time inventory tracking, a customer shopping portal, order management, advanced SQL sales analytics, and a custom data-driven Chat Bot.
 
 ![Python](https://img.shields.io/badge/Python-3.9+-blue)
