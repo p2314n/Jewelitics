@@ -65,7 +65,7 @@ A complete luxury jewelry store management system built with **Python Flask** an
 ## Project Structure
 
 ```
-jewelry inventory/
+Jewelitics/
 ├── app.py                     # Flask app factory & configuration
 ├── seed_data.py               # Demo data generator
 ├── requirements.txt           # Python dependencies
@@ -112,7 +112,7 @@ jewelry inventory/
 ### 1. Clone or Download
 ```bash
 git clone <your-repository-url>
-cd "jewelry inventory"
+cd Jewelitics
 ```
 
 ### 2. Create Virtual Environment
