@@ -9,7 +9,7 @@ A complete luxury jewelry store management system built with **Python Flask** an
 
 ## Screenshots
 
-*(Add your screenshots to the `screenshots/` folder to display them here)*
+
 
 | Admin Dashboard | Customer Shop |
 | :---: | :---: |
