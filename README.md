@@ -19,7 +19,7 @@ A complete luxury jewelry store management system built with **Python Flask** an
 | **Login Page** | **Register Page (Dark Mode)** |
 | ![Login Page](screenshots/Login.png) | ![Register Page (Dark Mode)](screenshots/register.png) |
 | **Staff Analytics** | **Reports** |
-| ![Staff Analytics](screenshots/Analytics.png) | ![Reports](screenshots/report.png) |
+| ![Staff Analytics](screenshots/Analytics.png) | ![Reports](screenshots/Report.png) |
 ---
 ## Features
 
