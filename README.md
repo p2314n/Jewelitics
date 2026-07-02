@@ -17,7 +17,7 @@ A complete luxury jewelry store management system built with **Python Flask** an
 | **Chat Bot** | **Inventory Management** |
 | ![Chat Bot](screenshots/chatbot.png) | ![Inventory Management](screenshots/inventory.png) |
 | **Register/Login Page** | **Register/Login Page (Dark Mode)** |
-| ![Register/Login Page](screenshots/login.png) | ![Register/Login Page (Dark Mode)](screenshots/register.png) |
+| ![Register/Login Page](screenshots/Login.png) | ![Register/Login Page (Dark Mode)](screenshots/register.png) |
 | **Staff Analytics** | |
 | ![Staff Analytics](screenshots/Analytics.png) | |
 ---
