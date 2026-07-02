@@ -19,7 +19,7 @@ A complete luxury jewelry store management system built with **Python Flask** an
 | **Login Page** | **Register Page (Dark Mode)** |
 | ![Login Page](screenshots/Login.png) | ![Register Page (Dark Mode)](screenshots/register.png) |
 | **Staff Analytics** | **Reports** |
-| ![Staff Analytics](screenshots/Analytics.png) | ![Reports](screenshots/reports.png) |
+| ![Staff Analytics](screenshots/Analytics.png) | ![Reports](screenshots/report.png) |
 ---
 ## Features
 
@@ -28,7 +28,7 @@ A complete luxury jewelry store management system built with **Python Flask** an
 - **OTP Email Verification** for new user registrations
 - Three roles: **Admin**, **Staff**, **Customer**
 - Role-based access control (decorators) to restrict page access
-- Secure password hashing (Werkzeug)
+- Secure password hashing (Werkzeug)    
 
 ### 📊 Dashboard & Analytics (Data Analytics)
 - 12 real-time stat cards (products, sales, stock alerts, orders)
